@@ -19,22 +19,24 @@ export const AuthProvider = ({ children }) => {
 
   const verifyToken = async (token) => {
     try {
-      const response = await fetch('YOUR_API_ENDPOINT/verify-token', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
+      // Since you're using Firebase, we'll modify this to check token validity
+      if (!token) {
+        setUser(null);
+        return;
+      }
+
+      // Instead of making an API call, we'll check localStorage
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      if (userData) {
+        setUser(userData);
       } else {
-        // Token is invalid
         localStorage.removeItem('token');
+        setUser(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
       localStorage.removeItem('token');
+      setUser(null);
     } finally {
       setLoading(false);
     }

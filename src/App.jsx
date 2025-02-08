@@ -17,7 +17,11 @@ import { useAuth } from './Components/User/AuthContext';
 import { AssignmentList } from './Components/Assignments/AssignmentList';
 import { Assignment } from './Components/Assignments/Assignment';
 import { SubmittedAssignments } from './Components/Assignments/SubmittedAssignments';
-
+import { toast } from 'react-hot-toast';
+import Participants from './Components/Participents';
+import Resources from './Routing/Resourses';
+import Calendar from './Routing/Calender';
+import Courses from './Routing/Courses';
 function MainApp() {
   const [activeTab, setActiveTab] = useState('whiteboard');
   const [isRaiseHand, setIsRaiseHand] = useState(false);
@@ -65,7 +69,7 @@ function MainApp() {
       id: 2,
       name: 'Data Structures',
       instructor: 'Dr. Emily White',
-      startTime: '4:00 PM',
+      startTime: '3:00-4:00 PM',
       duration: '1h',
       topic: 'Sliding Window',
       status: 'upcoming'
@@ -73,12 +77,31 @@ function MainApp() {
     {
       id: 3,
       name: "React.js",
-      instructor: 'Rahul',
-      startTime: '7:00PM-9PM',
+      instructor: 'Narayana',
+      startTime: '6:00PM-8:00PM',
       duration: '1h',
       topic: 'State Management && Context API',
       status: 'upcoming'
     },
+    {
+      id: 4,
+      name: "Apptitude",
+      instructor: 'Hemanth',
+      startTime: '8:30PM-9:30PM',
+      duration: '1h',
+      topic: 'Permatations&Combinations && Number System',
+      status: 'upcoming'
+    },
+    {
+      id:5,
+      name:'Standup',
+      instructor:'D.Naveen',
+      startTime:'10:00PM-11:00PM',
+      duration:'1h',
+      topic:'Problem Solving',
+      status:'upcoming'
+    }
+
   ];
 
   const todaysAssignments = [
@@ -186,8 +209,17 @@ function MainApp() {
   ];
 
   const handleJoinClass = (classInfo) => {
-    setShowVideoConference(true);
-    toast.success(`Joining ${classInfo.name}`);
+    try {
+      setShowVideoConference(true);
+      if (toast && typeof toast.success === 'function') {
+        toast.success(`Joining ${classInfo.name}`);
+      }
+    } catch (error) {
+      console.error('Error joining class:', error);
+      if (toast && typeof toast.error === 'function') {
+        toast.error('Failed to join class');
+      }
+    }
   };
 
   const instructor = {
@@ -234,14 +266,7 @@ function MainApp() {
       // Simulate execution delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // // Mock output based on language
-      // const outputs = {
-      //   javascript: 'console.log("Hello World!") → Hello World!',
-      //   python: 'print("Hello World!") → Hello World!',
-      //   java: 'System.out.println("Hello World!") → Hello World!',
-      //   cpp: 'cout << "Hello World!" → Hello World!',
-      //   c: 'printf("Hello World!") → Hello World!'
-      // };
+     
       
       setCodeOutput(outputs[language] || 'Code executed successfully!');
     } catch (error) {
@@ -431,6 +456,7 @@ function MainApp() {
                       >
                         <Hand size={20} />
                       </button>
+
                       <button
                         onClick={handleScreenShare}
                         className={`p-2 rounded-full ${
@@ -494,7 +520,7 @@ function MainApp() {
                     {activeTab === 'chat' && <Chat />}
                     {activeTab === 'participants' && (
                       <div className="space-y-4">
-                        {/* Add your participants list component here */}
+                    <Participants/>
                       </div>
                     )}
                   </div>
@@ -511,7 +537,7 @@ function MainApp() {
           </main>
         </div>
       )}
-
+   
       <ToastContainer />
     </>
   );
@@ -519,10 +545,12 @@ function MainApp() {
 
 function App() {
   return (
+   
     <Router>
       <AuthProvider>
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
           <Toaster position="top-right" />
+      
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
@@ -535,10 +563,38 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/resources"
+              element={
+                <ProtectedRoute>
+                  <Resources />
+                </ProtectedRoute>
+              }
+              
+            />
+              <Route
+              path="/calender"
+              element={
+                <ProtectedRoute>
+                  <Calendar />
+                </ProtectedRoute>
+              }
+              
+            />
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute>
+                  <Courses />
+                </ProtectedRoute>
+              }
+              />
+            
           </Routes>
         </div>
       </AuthProvider>
     </Router>
+  
   );
 }
 

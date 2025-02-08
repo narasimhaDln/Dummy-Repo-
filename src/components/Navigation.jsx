@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, Bell, Settings } from 'lucide-react';
 import { useToast } from '../Components/Hooks/UseTost';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Navigation({ userName, userAvatar }) {
@@ -9,6 +10,7 @@ export default function Navigation({ userName, userAvatar }) {
   const [activeNav, setActiveNav] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const notifications = [
     { id: 1, title: 'Assignment Due', message: 'Math homework due in 2 hours', time: '2h ago', unread: true, type: 'warning' },
@@ -23,9 +25,23 @@ export default function Navigation({ userName, userAvatar }) {
     { label: 'Sign Out', action: () => showToast('Signing out...', 'info') },
   ];
 
-  const handleNavClick = (nav) => {
-    setActiveNav(nav);
-    showToast(`Navigating to ${nav}`, 'info');
+  const handleNavClick = (route) => {
+    setActiveNav(route);
+    
+    // Handle different navigation routes
+    switch (route) {
+      case 'resources':
+        navigate('/resources');
+        break;
+      case 'calendar':
+        navigate('/calender'); // Note: matches the route path in App.jsx
+        break;
+      case 'courses':
+        navigate('/courses');
+        break;
+      default:
+        showToast(`Navigating to ${route}`, 'info');
+    }
   };
 
   const handleNotificationClick = (id) => {
@@ -57,16 +73,7 @@ export default function Navigation({ userName, userAvatar }) {
             </h1>
             
             <div className="hidden md:flex items-center">
-              <input
-                type="text"
-                placeholder="Search courses, assignments..."
-                className="px-4 py-1.5 rounded-l-full bg-blue-700/50 border-0 focus:ring-2 focus:ring-blue-400 text-white placeholder-blue-200 w-64"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button className="px-4 py-1.5 rounded-r-full bg-blue-700/50 hover:bg-blue-700 transition-colors">
-                🔍
-              </button>
+             
             </div>
 
             <nav className="hidden md:flex space-x-1">
